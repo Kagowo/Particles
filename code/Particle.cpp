@@ -1,4 +1,5 @@
 #include "Particle.h"
+#include "Matrices.h"
 
 Particle::Particle(sf::RenderTarget& target, int numPoints, sf::Vector2i mouseClickPosition)
     : m_A(2, numPoints),
@@ -42,9 +43,7 @@ void Particle::draw(RenderTarget& target, RenderStates states) const
 
     for(int j = 1; j <= m_numPoints; j++)
     {        
-        Vector2f pixelCoord = target.mapPixelToCoords(m_A[1][j-1], m_cartesianPlane);
-            lines[j].position = pixelCoord;
-
+        //lines[j].position = target.mapCoordsToPixel(sf::Vector2f(m_A(0, j - 1), m_A(1, j - 1)), m_cartesianPlane);
         lines[j].color = m_color2;
     }
 
@@ -68,7 +67,9 @@ void Particle::update(float dt)
 
 void Particle::translate(double xShift, double yShift)
 {
-    Matrix T(3,3);
+    TranslationMatrix T(xShift,yShift,m_A.getCols());
+    //T(0,2) = xShift;
+    //T(1,2) = yShift;
     m_A = T + m_A;
     m_centerCoordinate.x += xShift;
     m_centerCoordinate.y += yShift;
@@ -78,13 +79,8 @@ void Particle::rotate(double theta)
 {
     Vector2f temp = m_centerCoordinate;
     translate(-m_centerCoordinate.x, -m_centerCoordinate.y);
-    Matrix R(3,3);
-    double cosTheta = cos(theta);
-    double sinTheta = sin(theta);
-    R(0, 0) = cosTheta;
-    R(0, 1) = -sinTheta;
-    R(1, 0) = sinTheta;
-    R(1, 1) = cosTheta;
+    RotationMatrix R(1,1);
+    
     m_A = R * m_A;
     translate(temp.x, temp.y);
 
@@ -95,7 +91,7 @@ void Particle::scale(double c)
     Vector2f temp = m_centerCoordinate;
     translate(temp.x, temp.y);
     translate(-m_centerCoordinate.x, -m_centerCoordinate.y);
-    Matrix S(3,3);
+    ScalingMatrix S(1,1);
 
     m_A = S*m_A;
     translate(temp.x, temp.y);

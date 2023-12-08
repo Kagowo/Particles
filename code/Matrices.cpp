@@ -1,12 +1,6 @@
-//
-//  main.cpp
-//  Matrices
-//
-//  Created by Keanu Tham on 9/26/23.
-//
-
 #include <iostream>
 #include "Matrices.h"
+
 namespace Matrices
 {
     Matrix::Matrix(int _rows, int _cols)
@@ -127,6 +121,5 @@ ostream& operator<<(ostream& os, const Matrix& a)
     
     return os;
 }
-
-
 }
+
