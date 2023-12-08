@@ -20,7 +20,7 @@ Particle::Particle(sf::RenderTarget& target, int numPoints, sf::Vector2i mouseCl
 
     for (int j = 0; j < numPoints; j++)
     {
-        float r = (float)(rand() % 61 + 20); // Random radius between 20 and 80
+        float r = (float)(rand() % 61 + 20);
         float dx = r * cos(theta);
         float dy = r * sin(theta);
 
@@ -34,15 +34,17 @@ Particle::Particle(sf::RenderTarget& target, int numPoints, sf::Vector2i mouseCl
 void Particle::draw(RenderTarget& target, RenderStates states) const
 {
     VertexArray lines(TriangleFan, m_numPoints + 1);
-    sf::Vector2f center = target.mapPixelToCoords(sf::Vector2i(static_cast<int>(m_centerCoordinate.x), static_cast<int>(m_centerCoordinate.y)), m_cartesianPlane);
+    Vector2f center = target.mapPixelToCoords(Vector2i(static_cast<int>(m_centerCoordinate.x), static_cast<int>(m_centerCoordinate.y)), m_cartesianPlane);
 
 
     lines[0].position = center;
     lines[0].color = m_color1;
 
     for(int j = 1; j <= m_numPoints; j++)
-    {
-        lines[j].position = target.mapCoordsToPixel(Vector2f(m_A(0, j - 1), m_A(1, j - 1)), m_cartesianPlane);
+    {        
+        Vector2f pixelCoord = target.mapPixelToCoords(m_A[1][j-1], m_cartesianPlane);
+            lines[j].position = pixelCoord;
+
         lines[j].color = m_color2;
     }
 
@@ -67,8 +69,6 @@ void Particle::update(float dt)
 void Particle::translate(double xShift, double yShift)
 {
     Matrix T(3,3);
-    T(0, 2) = xShift;
-    T(1, 2) = yShift;
     m_A = T + m_A;
     m_centerCoordinate.x += xShift;
     m_centerCoordinate.y += yShift;
