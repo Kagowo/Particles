@@ -67,7 +67,6 @@ sin(theta) cos(theta)
 ///theta represents the angle of rotation in radians, counter-clockwise
 RotationMatrix(double theta)
 {
-
     Matrix R(2,2);
         double cosTheta = cos(theta);
         double sinTheta = sin(theta);
@@ -91,7 +90,11 @@ scale 0
 ///scale represents the size multiplier
 ScalingMatrix(double scale)
 {
-
+    Matrix S(2,2);
+    S(0, 0) = scale;
+    S(0, 1) = 0;
+    S(1, 0) = scale;
+    S(1, 1) = 0;
 }
 };
 ///2D Translation matrix
