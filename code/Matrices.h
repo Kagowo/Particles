@@ -113,7 +113,13 @@ yShift yShift yShift ...
 ///where each column contains one (x,y) coordinate pair
 TranslationMatrix(double xShift, double yShift, int nCols)
 {
-
+    T(2,nCols);
+    T(0, 0) = xShift;
+    T(0, 1) = xShift;
+    T(0, 2) = xShift;
+    T(1, 0) = yShift;
+    T(1, 1) = yShift;
+    T(1, 2) = yShift;
 }
 };
 }
