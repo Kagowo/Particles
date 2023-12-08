@@ -1,30 +1,32 @@
 #include "Particle.h"
 
-Particle::Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosition)
+Particle::Particle(sf::RenderTarget& target, int numPoints, sf::Vector2i mouseClickPosition)
     : m_A(2, numPoints),
-    m_ttl(TTL),
-    m_numPoints(numPoints),
-    m_radiansPerSec(((float)rand() / RAND_MAX) * M_PI),
-    m_cartesianPlane(target.mapPixelToCoords(mouseClickPosition)),
-    m_centerCoordinate(m_cartesianPlane),
-    m_vx((rand() % 2 != 0 ? -1 : 1) * (rand() % 401 + 100)),
-    m_vy((rand() % 2 != 0 ? -1 : 1) * (rand() % 401 + 100)),
-    m_color1(sf::Color::White),
-    m_color2(sf::Color(rand() % 256, rand() % 256, rand() % 256))
-    {
+      m_ttl(TTL),
+      m_numPoints(numPoints),
+      m_radiansPerSec(((float)rand() / RAND_MAX) * M_PI),
+    
+      m_centerCoordinate(0, 0),
+      m_vx((rand() % 2 != 0 ? 1 : -1) * (rand() % 401 + 100)),
+      m_vy(rand() % 401 + 100),
+      m_color1(sf::Color::White),
+      m_color2(sf::Color(rand() % 256, rand() % 256, rand() % 256))
+{
+    m_cartesianPlane.setCenter(0, 0);
+    m_cartesianPlane.setSize(target.getSize().x, -1.0f * target.getSize().y);
 
-    setCenter(0,0);
-    setSize(target.getSize().x, (-1.0) * target.getSize().y);
-    float theta = ((float)rand() / RAND_MAX) * M_PI / 2.0;
-    float dTheta = 2.0 / M_PI / (numPoints - 1);
+    float theta = ((float)rand() / RAND_MAX) * M_PI / 2.0f;
+    float dTheta = 2.0f * M_PI / (numPoints - 1);
 
-    for(int j = 0; j < numPoints; j++)
+    for (int j = 0; j < numPoints; j++)
     {
-        float r = (float)(rand() % 61 + 20);
+        float r = (float)(rand() % 61 + 20); // Random radius between 20 and 80
         float dx = r * cos(theta);
         float dy = r * sin(theta);
+
         m_A(0, j) = m_centerCoordinate.x + dx;
         m_A(1, j) = m_centerCoordinate.y + dy;
+
         theta += dTheta;
     }
 }
@@ -32,7 +34,8 @@ Particle::Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosit
 void Particle::draw(RenderTarget& target, RenderStates states) const
 {
     VertexArray lines(TriangleFan, m_numPoints + 1);
-    Vector2f center = target.mapCoordsToPixel(m_centerCoordinate, m_cartesianPlane)
+    sf::Vector2f center = target.mapPixelToCoords(sf::Vector2i(static_cast<int>(m_centerCoordinate.x), static_cast<int>(m_centerCoordinate.y)), m_cartesianPlane);
+
 
     lines[0].position = center;
     lines[0].color = m_color1;
@@ -99,7 +102,7 @@ void Particle::scale(double c)
 }
 
 
-/*
+
 bool Particle::almostEqual(double a, double b, double eps)
 {
 	return fabs(a - b) < eps;
@@ -242,4 +245,4 @@ void Particle::unitTests()
     }
 
     cout << "Score: " << score << " / 7" << endl;
-}*/
+}
