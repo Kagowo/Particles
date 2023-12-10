@@ -2,19 +2,18 @@
 
 Engine::Engine()
 {
-    VideoMode::getDesktopMode();  
-    RenderWindow m_Window(VideoMode::getDesktopMode(), "Particles", Style::Default);
-
+    m_Window.create(VideoMode::getDesktopMode(), "Particles");
 }
 
 void Engine::run()
 {
+    srand(time(0));
     Clock clock;
     cout << "Starting Particle unit tests..." << endl;
     Particle p(m_Window, 4, { (int)m_Window.getSize().x / 2, (int)m_Window.getSize().y / 2 });
     p.unitTests();
     cout << "Unit tests complete.  Starting engine..." << endl;
-    Event event;
+    
     while(m_Window.isOpen())
     {
         Time elapsed = clock.restart();
@@ -39,10 +38,8 @@ void Engine::input()
             {
                     if (event.mouseButton.button == Mouse::Left)
                     {
-                        std::cout << "the left button was pressed" << std::endl;
-                        std::cout << "mouse x: " << event.mouseButton.x << std::endl;
-                        std::cout << "mouse y: " << event.mouseButton.y << std::endl;
-                        if(m_particles.size() < 5)
+                        int nParticles = 5;
+                        for(int x = 0; x < nParticles; x++)
                         {
                             int numPoints = rand() % 26 + 25;
                             Particle particle(m_Window, numPoints, { event.mouseButton.x, event.mouseButton.y });
@@ -62,7 +59,7 @@ void Engine::input()
 
 void Engine::update(float dtAsSeconds)
 {
-    for(auto it = m_particles.begin(); it != m_particles.end();)
+    for(vector<Particle>::iterator it = m_particles.begin(); it != m_particles.end();)
     {
         if(it->getTTL() > 0.0)
         {
@@ -79,9 +76,9 @@ void Engine::update(float dtAsSeconds)
 void Engine::draw()
 {
     m_Window.clear();
-   for (const auto& particle : m_particles)
+   for (auto& p : m_particles)
     {
-        m_Window.draw(particle);
+        m_Window.draw(p);
     }
     m_Window.display();
 }

@@ -1,20 +1,17 @@
 #include "Particle.h"
-#include "Matrices.h"
 
-Particle::Particle(sf::RenderTarget& target, int numPoints, sf::Vector2i mouseClickPosition)
-    : m_A(2, numPoints),
-      m_ttl(TTL),
-      m_numPoints(numPoints),
-      m_radiansPerSec(((float)rand() / RAND_MAX) * M_PI),
-    
-      m_centerCoordinate(0, 0),
-      m_vx((rand() % 2 != 0 ? 1 : -1) * (rand() % 401 + 100)),
-      m_vy(rand() % 401 + 100),
-      m_color1(sf::Color::White),
-      m_color2(sf::Color(rand() % 256, rand() % 256, rand() % 256))
+Particle::Particle(sf::RenderTarget& target, int numPoints, sf::Vector2i mouseClickPosition) : m_A(2, numPoints)
 {
-    m_cartesianPlane.setCenter(0, 0);
-    m_cartesianPlane.setSize(target.getSize().x, -1.0f * target.getSize().y);
+    m_ttl = TTL;
+    m_numPoints = numPoints;
+    m_radiansPerSec = ((float)rand() / RAND_MAX) * M_PI;
+    m_cartesianPlane.setCenter(0,0);
+    m_cartesianPlane.setSize(target.getSize().x, -1.0 * target.getSize().y);
+    m_centerCoordinate = target.mapPixelToCoords(mouseClickPosition, m_cartesianPlane);
+    m_vx = (rand() % 2 != 0 ? 1 : -1) * (rand() % 401 + 100);
+    m_vy = rand() % 401 + 100;
+    m_color1 = sf::Color::White;
+    m_color2 = Color(rand() % 256, rand() % 256, rand() % 256);
 
     float theta = ((float)rand() / RAND_MAX) * M_PI / 2.0f;
     float dTheta = 2.0f * M_PI / (numPoints - 1);
@@ -35,15 +32,14 @@ Particle::Particle(sf::RenderTarget& target, int numPoints, sf::Vector2i mouseCl
 void Particle::draw(RenderTarget& target, RenderStates states) const
 {
     VertexArray lines(TriangleFan, m_numPoints + 1);
-    Vector2f center = target.mapPixelToCoords(Vector2i(static_cast<int>(m_centerCoordinate.x), static_cast<int>(m_centerCoordinate.y)), m_cartesianPlane);
-
+    Vector2f center = static_cast<Vector2f>(target.mapCoordsToPixel(m_centerCoordinate, m_cartesianPlane));
 
     lines[0].position = center;
     lines[0].color = m_color1;
 
     for(int j = 1; j <= m_numPoints; j++)
     {        
-        //lines[j].position = target.mapCoordsToPixel(sf::Vector2f(m_A(0, j - 1), m_A(1, j - 1)), m_cartesianPlane);
+        lines[j].position = static_cast<Vector2f>(target.mapCoordsToPixel({m_A(0, j - 1), m_A(1, j - 1)}, m_cartesianPlane));
         lines[j].color = m_color2;
     }
 
@@ -79,8 +75,7 @@ void Particle::rotate(double theta)
 {
     Vector2f temp = m_centerCoordinate;
     translate(-m_centerCoordinate.x, -m_centerCoordinate.y);
-    RotationMatrix R(1,1);
-    
+    RotationMatrix R(theta);
     m_A = R * m_A;
     translate(temp.x, temp.y);
 
@@ -89,10 +84,8 @@ void Particle::rotate(double theta)
 void Particle::scale(double c)
 {
     Vector2f temp = m_centerCoordinate;
-    translate(temp.x, temp.y);
     translate(-m_centerCoordinate.x, -m_centerCoordinate.y);
-    ScalingMatrix S(1,1);
-
+    ScalingMatrix S = c;
     m_A = S*m_A;
     translate(temp.x, temp.y);
 }

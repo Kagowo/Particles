@@ -65,16 +65,7 @@ cos(theta) -sin(theta)
 sin(theta) cos(theta)
 */
 ///theta represents the angle of rotation in radians, counter-clockwise
-RotationMatrix(double theta)
-{
-    Matrix R(2,2);
-        double cosTheta = cos(theta);
-        double sinTheta = sin(theta);
-        R(0, 0) = cosTheta;
-        R(0, 1) = -sinTheta;
-        R(1, 0) = sinTheta;
-        R(1, 1) = cosTheta;
-}
+RotationMatrix(double theta);
 };
 ///2D scaling matrix
 ///usage: A = S * A expands or contracts A by the specified scaling factor
@@ -88,14 +79,7 @@ scale 0
 0 scale
 */
 ///scale represents the size multiplier
-ScalingMatrix(double scale)
-{
-    Matrix S(2,2);
-    S(0, 0) = scale;
-    S(0, 1) = 0;
-    S(1, 0) = scale;
-    S(1, 1) = 0;
-}
+ScalingMatrix(double scale);
 };
 ///2D Translation matrix
 ///usage: A = T + A will shift all coordinates of A by (xShift, yShift)
@@ -111,16 +95,7 @@ yShift yShift yShift ...
 ///paramaters are xShift, yShift, and nCols
 ///nCols represents the number of columns in the matrix
 ///where each column contains one (x,y) coordinate pair
-TranslationMatrix(double xShift, double yShift, int nCols)
-{
-    T(2,nCols);
-    T(0, 0) = xShift;
-    T(0, 1) = xShift;
-    T(0, 2) = xShift;
-    T(1, 0) = yShift;
-    T(1, 1) = yShift;
-    T(1, 2) = yShift;
-}
+TranslationMatrix(double xShift, double yShift, int nCols);
 };
 }
 #endif // MATRIX_H_INCLUDED
