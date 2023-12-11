@@ -64,8 +64,6 @@ void Particle::update(float dt)
 void Particle::translate(double xShift, double yShift)
 {
     TranslationMatrix T(xShift,yShift,m_A.getCols());
-    //T(0,2) = xShift;
-    //T(1,2) = yShift;
     m_A = T + m_A;
     m_centerCoordinate.x += xShift;
     m_centerCoordinate.y += yShift;
@@ -90,7 +88,7 @@ void Particle::scale(double c)
     translate(temp.x, temp.y);
 }
 
-
+//END
 
 bool Particle::almostEqual(double a, double b, double eps)
 {
