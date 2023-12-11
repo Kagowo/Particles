@@ -112,7 +112,7 @@ ostream& operator<<(ostream& os, const Matrix& a)
 }
 
 
-RotationMatrix::RotationMatrix(double theta) : Matrix(2, 2)
+RotationMatrix::RotationMatrix(double theta) : Matrix(2, 2) //Initializes matrices and sets them accordingly
 {
     a[0][0] = cos(theta);
 	a[0][1] = -sin(theta);

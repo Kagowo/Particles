@@ -2,13 +2,13 @@
 
 Engine::Engine()
 {
-    m_Window.create(VideoMode::getDesktopMode(), "Particles");
+    m_Window.create(VideoMode::getDesktopMode(), "Particles"); //Opening the window
 }
 
 void Engine::run()
 {
-    srand(time(0));
-    Clock clock;
+    srand(time(0)); //seed points in the particle
+    Clock clock; //Measure elapsed time
     cout << "Starting Particle unit tests..." << endl;
     Particle p(m_Window, 4, { (int)m_Window.getSize().x / 2, (int)m_Window.getSize().y / 2 });
     p.unitTests();
@@ -59,26 +59,26 @@ void Engine::input()
 
 void Engine::update(float dtAsSeconds)
 {
-    for(vector<Particle>::iterator it = m_particles.begin(); it != m_particles.end();)
+    for(vector<Particle>::iterator it = m_particles.begin(); it != m_particles.end();) //Iterating through the particle list
     {
-        if(it->getTTL() > 0.0)
+        if(it->getTTL() > 0.0) //checking if particle should still be live
         {
-            it->update(dtAsSeconds);
-            it++;
+            it->update(dtAsSeconds); //updating particle
+            it++; //moving to next particle
         }
         else
         {
-            it = m_particles.erase(it);
+            it = m_particles.erase(it);//Erasing particle if its TTL is zero
         }
     }
 }
 
 void Engine::draw()
 {
-    m_Window.clear();
-   for (auto& p : m_particles)
+    m_Window.clear(); //Clear window
+   for (auto& p : m_particles) //Iterates through particles
     {
-        m_Window.draw(p);
+        m_Window.draw(p);//draws particles
     }
-    m_Window.display();
+    m_Window.display();//Displays the window
 }
