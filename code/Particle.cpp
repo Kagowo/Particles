@@ -13,7 +13,7 @@ Particle::Particle(sf::RenderTarget& target, int numPoints, sf::Vector2i mouseCl
     m_color1 = sf::Color::White;
     m_color2 = Color(rand() % 256, rand() % 256, rand() % 256);
 
-    float theta = ((float)rand() / RAND_MAX) * M_PI / 2.0f;
+    float theta = 0.0f;
     float dTheta = 2.0f * M_PI / (numPoints - 1);
 
     for (int j = 0; j < numPoints; j++)
